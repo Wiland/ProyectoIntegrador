@@ -1,0 +1,16 @@
+.active{
+  color: white;
+  margin-top: -10px !important;
+  padding-top: 18px;
+  padding-bottom: 10px;
+  background-color: #885129;
+  border-radius: 5px;
+  /*text-decoration: underline;*/
+}
+
+.nav-link{
+  margin: 0px  10px 0px 10px;
+  padding-left: 20px;
+  padding-right: 20px;
+  /*border-bottom: 2px solid;*/
+}

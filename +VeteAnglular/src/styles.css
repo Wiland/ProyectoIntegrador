@@ -1,0 +1,72 @@
+/* You can add global styles to this file, and also import other style files */
+html,body{
+  margin: 0px;
+  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto Slab', serif;
+  background-color: #f7f3ee;
+}
+a,a:visited{
+  color: inherit !important;
+  text-decoration: none;
+}
+#logo{
+  font-size: 1.2em;
+}
+.no-margin{
+  margin: 0px;
+}
+.bg-nav{
+  background-color: #B2793C;
+}
+.white{
+  color: #FFFEF4;
+}
+.large-padding{
+  padding: 5px 3px;
+}
+
+.img-circle{
+  border-radius: 100%;
+}
+
+.pet-photo {
+  text-align: center;
+  overflow: hidden;
+}
+.pet-photo img {
+  max-width: 220px;
+  max-height: 220px;
+  min-width: 220px;
+  min-height: 220px;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Animaciones */
+.animated {
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+.fast {
+  -webkit-animation-duration: 0.4s;
+  animation-duration: 0.4s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation-name: fadeIn;
+}
