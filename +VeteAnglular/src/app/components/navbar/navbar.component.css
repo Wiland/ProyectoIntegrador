@@ -5,12 +5,21 @@
   padding-bottom: 10px;
   background-color: #885129;
   border-radius: 5px;
-  /*text-decoration: underline;*/
 }
-
+.navbar-brand{
+  font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto Slab', serif;
+}
 .nav-link{
   margin: 0px  10px 0px 10px;
   padding-left: 20px;
   padding-right: 20px;
-  /*border-bottom: 2px solid;*/
+  color: rgba(255, 255, 255, 0.86) !important;
+}
+.nav-link:hover{
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  color: rgba(255, 255, 255, 1) !important;
 }
