@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { PetsService } from '../../services/pets.service';
+import { PagerService } from '../../services/pager.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-pets',
@@ -6,44 +9,73 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./pets.component.css']
 })
 export class PetsComponent implements OnInit {
-  pet:any;
-  pets:any[] = [];
+  private pet:any;
+  private pets:any[] = [];
+  private errorMsg:string = "";
+  private successMsg:string = "";
+  private treatments:any[] = [];
+  private pagedTreatments:any[] = [];
+  private loading:boolean = false;
+  private treatment:any;
+  private pager:any = {};
 
-  constructor() { }
+  constructor( private _petsService:PetsService, private _router:Router, private _pagerService:PagerService ) { }
 
   ngOnInit() {
-    this.pets = [{
-      name: "Pupi",
-      kind: "Perro",
-      breed: "Golden Retriever",
-      owner: {
-        id: "idOwner",
-        name: "Wilmer"
-      },
-      birthDate: "2014-10-02",
-      acquisitionDate: "2014-10-02",
-      photo: "/assets/img/perro.jpg",
-      active: true
+    this.getAllPets();
+  }
+
+  getAllPets(){
+    this._petsService.getAllPets()
+    .subscribe( data => {
+      this.pets.push(data);
     },
-    {
-      name: "Fredy",
-      kind: "Perro",
-      breed: "Golden Retriever",
-      owner: {
-        id: "idOwner2",
-        name: "Rolo"
-      },
-      birthDate: "2015-10-02",
-      acquisitionDate: "2015-10-02",
-      photo: "/assets/img/noimage.png",
-      active: true
-    }]
+    error => {
+      console.log(error.json());
+      this.manageError(error);
+    });
+  }
+
+  treatmentDetail(index){
+    this.treatment = this.treatments[index];
   }
 
   getPetDetails(id){
-    console.log(id)
-    this.pet = this.pets[id];
-    console.log(this.pet);
+    this.pet = this._petsService.getPetDetails(id);
+    this.getPetTreatments();
+  }
+
+  getPetTreatments(){
+    this.loading = true;
+    this.treatments = [];
+
+    this._petsService.getPetTreatments(this.pet.id)
+    .subscribe( data => {
+      this.loading = false;
+      this.treatments.push(data);
+      this.setPage(1);
+    },
+    error => {
+      this.loading = false;
+      // this.manageError(error);
+    });
+  }
+
+  setPage(page:number) {
+    if (page < 1 || page > this.pager.totalPages) {
+      return;
+    }
+
+    // get pager object from service
+    this.pager = this._pagerService.getPager(this.treatments.length, page);
+
+    // get current page of items
+    this.pagedTreatments = this.treatments.slice(this.pager.startIndex, this.pager.endIndex + 1);
+  }
+
+  manageError(error){
+    this.errorMsg = "Error";
+    this.successMsg = "";
   }
 
 }

@@ -1,22 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
 html,body{
   margin: 0px;
-  font-family: 'Open Sans', sans-serif;
-  font-family: 'Roboto Slab', serif;
+  /*font-family: 'Open Sans', sans-serif;
+  font-family: 'Roboto Slab', serif;*/
   background-color: #f7f3ee;
-}
-a,a:visited{
-  color: inherit !important;
-  text-decoration: none;
 }
 #logo{
   font-size: 1.2em;
 }
-.no-margin{
-  margin: 0px;
-}
 .bg-nav{
   background-color: #B2793C;
+}
+.table-header{
+  background-color: #B2793C !important;
+  border-color: #B2793C !important;
+}
+.table-header th{
+  background-color: #B2793C !important;
+  border-color: #B2793C !important;
+  font-weight: normal;
 }
 .white{
   color: #FFFEF4;
