@@ -1,38 +1,38 @@
 import { Component, OnInit } from '@angular/core';
-import { PetsService } from '../../services/pets.service';
+import { VeterinaryService } from '../../services/veterinary.service';
 import { UserService } from '../../services/user.service';
 import { PagerService } from '../../services/pager.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-pets',
-  templateUrl: './pets.component.html',
-  styleUrls: ['./pets.component.css']
+  selector: 'app-veterinary',
+  templateUrl: './veterinary.component.html',
+  styleUrls: ['./veterinary.component.css']
 })
-export class PetsComponent implements OnInit {
-  private pet:any;
-  private pets:any[] = [];
-  private pagedPets:any[] = [];
+export class VeterinaryComponent implements OnInit {
+  private veterinary:any;
+  private veterinaryList:any[] = [];
+  private pagedVeterinary:any[] = [];
   private errorMsg:string = "";
   private successMsg:string = "";
   private pager:any = {};
   private loading:boolean = false;
   private create:boolean = false;
 
-  constructor( private _petsService:PetsService, private _router:Router, private _pagerService:PagerService,
+  constructor( private _veterinaryListService:VeterinaryService, private _router:Router, private _pagerService:PagerService,
                private _userService:UserService ) { }
 
   ngOnInit() {
-    this.getAllPetsForUser();
+    this.getAllVeterinary();
   }
 
-  getAllPetsForUser(){
+  getAllVeterinary(){
     this.loading = true;
-    this._petsService.getAllPetsForUser(this._userService.getCurrentUser().id)
+    this._veterinaryListService.getAllVeterinary()
     .subscribe( data => {
-      this.pets.push(data);
+      this.veterinaryList.push(data);
       this.loading = false;
-      console.log(this.pets);
+      console.log(this.veterinaryList);
       this.setPage(1);
     },
     error => {
@@ -41,28 +41,25 @@ export class PetsComponent implements OnInit {
     });
   }
 
-  petDetails(id){
+  veterinaryListDetails(id){
     if (id === -1) {
       this.create = true;
-      this.pet = this._petsService.getEmptyPet();
+      this.veterinary = this._veterinaryListService.getEmptyVeterinary();
     } else {
       this.create = false;
-      this.pet = this._petsService.getPetDetails(id);
+      this.veterinary = this._veterinaryListService.getVeterinaryDetails(id);
     }
   }
 
-  createPet(){
-    this.pet.owner.id = this._userService.getCurrentUser().id;
-    this.pet.owner.name = this._userService.getCurrentUser().name;
-
-    this._petsService.savePet(this.pet).subscribe(
+  createVeterinary(){
+    this._veterinaryListService.saveVeterinary(this.veterinaryList).subscribe(
       data => {
         console.log(data);
         this.successMsg = "Datos grabados correctamente";
         this.errorMsg = "";
-        this.getAllPetsForUser();
+        this.getAllVeterinary();
         document.getElementById("closeModal").click();
-        this.pet = {};
+        this.veterinary = {};
       },
       error => {
         console.log(error);
@@ -70,26 +67,26 @@ export class PetsComponent implements OnInit {
       });
   }
 
-  updatePet(){
-    this._petsService.editPet(this.pet).subscribe(
+  updateVeterinary(){
+    this._veterinaryListService.editVeterinary(this.veterinaryList).subscribe(
       data => {
         this.successMsg = "Datos grabados correctamente";
         this.errorMsg = "";
-        this.getAllPetsForUser();
-        this.pet = {};
+        this.getAllVeterinary();
+        this.veterinary = {};
       },
       error => {
         this.manageError(error);
       });
   }
 
-  deletePet(){
-    this._petsService.deletePet(this.pet.id).subscribe(
+  deleteVeterinary(){
+    this._veterinaryListService.deleteVeterinary(this.veterinary.id).subscribe(
       data => {
         this.successMsg = "Datos grabados correctamente";
         this.errorMsg = "";
-        this.getAllPetsForUser();
-        this.pet = {};
+        this.getAllVeterinary();
+        this.veterinary = {};
       },
       error => {
         this.manageError(error);
@@ -102,15 +99,14 @@ export class PetsComponent implements OnInit {
     }
 
     // get pager object from service
-    this.pager = this._pagerService.getPager(this.pets.length, page);
+    this.pager = this._pagerService.getPager(this.veterinaryList.length, page);
 
     // get current page of items
-    this.pagedPets = this.pets.slice(this.pager.startIndex, this.pager.endIndex + 1);
+    this.pagedVeterinary = this.veterinaryList.slice(this.pager.startIndex, this.pager.endIndex + 1);
   }
 
   manageError(error){
     this.errorMsg = "Error";
     this.successMsg = "";
   }
-
 }

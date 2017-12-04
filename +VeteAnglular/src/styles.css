@@ -1,4 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+/* General */
 html,body{
   margin: 0px;
   /*font-family: 'Open Sans', sans-serif;
@@ -8,6 +8,12 @@ html,body{
 #logo{
   font-size: 1.2em;
 }
+
+a{
+  cursor: pointer;
+}
+
+/* Default App Colors */
 .bg-nav{
   background-color: #B2793C;
 }
@@ -23,14 +29,9 @@ html,body{
 .white{
   color: #FFFEF4;
 }
-.large-padding{
-  padding: 5px 3px;
-}
-
 .img-circle{
   border-radius: 100%;
 }
-
 .pet-photo {
   text-align: center;
   overflow: hidden;
@@ -43,15 +44,54 @@ html,body{
   object-fit: cover;
   object-position: center;
 }
+.card-header{
+  background-color: #f1c626;
+}
+.title{
+  font-weight: bold;
+}
+.btn-custom{
+  color: white;
+  background-color: #B2793C;
+  border-color: #B2793C;
+}
+.btn-custom:hover{
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  background-color: #8A5D2E;
+  border-color: #8A5D2E;
+}
+.filter-container{
+  margin-bottom: 10px;
+}
+.card-expand{
+  height: 100%;
+}
 
-/* Animaciones */
+/* Navigation Links */
+.page-item:not(.disabled) .page-link {
+  background-color: #B2793C;
+  border-color: #B2793C;
+}
+.page-item:not(.disabled) .page-link:hover{
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  background-color: #8A5D2E;
+  border-color: #8A5D2E;
+  color: white;
+}
+
+/* Animations */
 .animated {
   -webkit-animation-duration: 1s;
   animation-duration: 1s;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
 }
-
 .fast {
   -webkit-animation-duration: 0.4s;
   animation-duration: 0.4s;

@@ -1,0 +1,148 @@
+<div *ngIf="(errorMsg != '')" class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>Error!</strong> {{ errorMsg }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div *ngIf="(successMsg != '')" class="alert alert-success alert-dismissible fade show" role="alert">
+  <strong>OK!</strong> {{ successMsg }}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="row animated fadeIn fast">
+  <div class="col-md-4" style="margin-bottom: 10px;">
+    <div class="card card-expand">
+      <div class="card-header ">
+        <strong>Mis mascotas</strong>
+      </div>
+      <div class="card-body">
+        <div *ngIf="pet" class="pet-photo animated fadeIn">
+          <img [src]="pet.photo" class="img-thumbnail img-circle">
+          <br>
+          <br>
+        </div>
+        <select (change)="getPetDetails($event.target.value)" class="form-control" name="selectPet">
+          <option value="-1">-- Mascota --</option>
+          <option *ngFor="let aux_pet of pets; let i = index;" [value]="i">{{ aux_pet.name }}</option>
+        </select>
+        <br>
+        <div class="card animated fadeIn" *ngIf="pet">
+          <div class="card-body">
+            <h4 class="card-title">{{ pet.name }}</h4>
+            <h6 class="card-subtitle mb-2 text-muted">{{ pet.kind }}</h6>
+            <div class="card-text">
+              <p><strong>Raza:</strong> {{ pet.breed }}</p>
+              <p><strong>Nació el:</strong> {{ pet.birthDate | date:'shortDate' }}</p>
+              <p><strong>La tengo desde:</strong> {{ pet.acquisitionDate | date:'shortDate' }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="card card-expand">
+      <div class="card-header">
+        <strong>Tratamientos</strong>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-secondary text-center animated fadeIn" role="alert" *ngIf="treatments.length <= 0 && pet && !loading">
+          <small>-- No hay tratamientos, por favor escoja otra mascota --</small>
+        </div>
+        <div class="alert alert-primary animated fadeIn fast text-center" role="alert" *ngIf="treatments.length <= 0 && pet && loading">
+          <small>Estamos cargando los tratamientos</small>
+        </div>
+        <div class="alert alert-secondary text-center animated fadeIn" role="alert" *ngIf="treatments.length <= 0 && !pet">
+          <small>-- Seleccione una mascota --</small>
+        </div>
+        <div *ngIf="treatments.length > 0" class="filter-container animated fadeIn fast">
+          <button class="btn btn-custom" type="button" data-toggle="collapse" data-target="#tableFilters" aria-expanded="false" aria-controls="tableFilters">
+            Filtros
+          </button>
+          <div class="collapse" id="tableFilters">
+            <div class="card card-body">
+              Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+            </div>
+          </div>
+        </div>
+        <table class="table table-bordered table-hover animated fadeIn fast" *ngIf="treatments.length > 0">
+          <thead class="thead-dark table-header">
+            <tr>
+              <th scope="col">Fecha</th>
+              <th scope="col">Descripción</th>
+              <th scope="col">Veterinaria</th>
+              <th scope="col">Detalles</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let treatment_aux of pagedTreatments; let i = index;">
+              <td>{{ treatment_aux.dateTime | date:'shortDate' }}</td>
+              <td>{{ treatment_aux.name }}</td>
+              <td>{{ treatment_aux.accessCode.vetName }}</td>
+              <td><a [tabindex]="i" (click)="treatmentDetail(i)" data-toggle="modal" data-target="#treatmentDetailModal">Más...</a></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- pager -->
+        <nav *ngIf="pager.pages && pager.pages.length" aria-label="Page navigation example">
+          <ul class="pagination">
+            <li [class]="(pager.currentPage === 1 ? 'disabled' : '') + ' page-item'">
+              <a class="page-link" (click)="setPage(1)" aria-label="Primera">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Primera</span>
+              </a>
+            </li>
+            <li [class]="(pager.currentPage === 1 ? 'disabled' : '') + ' page-item'">
+              <a class="page-link" (click)="setPage(pager.currentPage - 1)" aria-label="Anterior">
+                <span aria-hidden="true">&lt;</span>
+                <span class="sr-only">Anterior</span>
+              </a>
+            </li>
+            <li *ngFor="let page of pager.pages" [class]="(pager.currentPage === page ? 'active' : '') + ' page-item'">
+              <a class="page-link" (click)="setPage(page)">{{page}}</a>
+            </li>
+            <li [class]="(pager.currentPage === pager.totalPages ? 'disabled' : '') + ' page-item'">
+              <a class="page-link" (click)="setPage(pager.currentPage + 1)" aria-label="Siguiente">
+                <span aria-hidden="true">&gt;</span>
+                <span class="sr-only">Siguiente</span>
+              </a>
+            </li>
+            <li [class]="(pager.currentPage === pager.totalPages ? 'disabled' : '') + ' page-item'">
+              <a class="page-link" (click)="setPage(pager.totalPages)" aria-label="Última">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Última</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div *ngIf="treatment" class="modal fade" id="treatmentDetailModal" tabindex="-1" role="dialog" aria-labelledby="treatmentDetailTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title d-inline" id="treatmentDetailTitle">{{ treatment.name }}</h5>&nbsp;&nbsp;
+        <span class="modal-title align-middle badge badge-pill badge-warning">{{ treatment.dateTime | date:'short' }}</span>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h6 class="title">Síntomas</h6>
+        <p>{{ treatment.symptom }}</p>
+        <hr>
+        <h6 class="title">Tratamiento</h6>
+        <p>{{ treatment.description }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

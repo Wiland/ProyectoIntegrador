@@ -1,0 +1,141 @@
+<div class="container">
+  <div *ngIf="(errorMsg != '')" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Error!</strong> {{ errorMsg }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div *ngIf="(successMsg != '')" class="alert alert-success alert-dismissible fade show" role="alert">
+    <strong>OK!</strong> {{ successMsg }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="row animated fadeIn fast">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-title">
+            <h4>Listado de veterinarias</h4>
+          </div>
+          <div class="container">
+            <div class="alert alert-secondary text-center animated fadeIn" role="alert" *ngIf="veterinaryList.length <= 0 && !loading">
+              <small>-- No hay veterinarias --</small>
+            </div>
+            <div class="alert alert-primary animated fadeIn fast text-center" role="alert" *ngIf="veterinaryList.length <= 0 && loading">
+              <small>Estamos cargando la información de las veterinarias</small>
+            </div>
+          </div>
+          <table class="table table-bordered table-hover animated fadeIn fast" *ngIf="veterinaryList.length > 0">
+            <thead class="thead-dark table-header">
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Raza</th>
+                <th scope="col">Nacimiento</th>
+                <th scope="col">Adquisición</th>
+                <th scope="col">Detalles</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let veterinary_aux of veterinaryList; let i = index;">
+                <td>{{ veterinary_aux.name }}</td>
+                <td>{{ veterinary_aux.kind }}</td>
+                <td>{{ veterinary_aux.breed }}</td>
+                <td>{{ veterinary_aux.birthDate | date:'shortDate' }}</td>
+                <td>{{ veterinary_aux.acquisitionDate | date:'shortDate' }}</td>
+                <td><a [tabindex]="veterinary_aux.id" (click)="veterinaryDetails(i)" data-toggle="modal" data-target="#veterinaryDetailModal">Más...</a></td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <!-- pager -->
+          <nav *ngIf="pager.pages && pager.pages.length" aria-label="Page navigation example">
+            <ul class="pagination">
+              <li [class]="(pager.currentPage === 1 ? 'disabled' : '') + ' page-item'">
+                <a class="page-link" (click)="setPage(1)" aria-label="Primera">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">Primera</span>
+                </a>
+              </li>
+              <li [class]="(pager.currentPage === 1 ? 'disabled' : '') + ' page-item'">
+                <a class="page-link" (click)="setPage(pager.currentPage - 1)" aria-label="Anterior">
+                  <span aria-hidden="true">&lt;</span>
+                  <span class="sr-only">Anterior</span>
+                </a>
+              </li>
+              <li *ngFor="let page of pager.pages" [class]="(pager.currentPage === page ? 'active' : '') + ' page-item'">
+                <a class="page-link" (click)="setPage(page)">{{page}}</a>
+              </li>
+              <li [class]="(pager.currentPage === pager.totalPages ? 'disabled' : '') + ' page-item'">
+                <a class="page-link" (click)="setPage(pager.currentPage + 1)" aria-label="Siguiente">
+                  <span aria-hidden="true">&gt;</span>
+                  <span class="sr-only">Siguiente</span>
+                </a>
+              </li>
+              <li [class]="(pager.currentPage === pager.totalPages ? 'disabled' : '') + ' page-item'">
+                <a class="page-link" (click)="setPage(pager.totalPages)" aria-label="Última">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Última</span>
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <button type="button" (click)="veterinaryDetails(-1)" data-toggle="modal" data-target="#veterinaryDetailModal" class="btn btn-custom">Agregar Mascota</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div *ngIf="veterinary" class="modal fade" id="veterinaryDetailModal" tabindex="-1" role="dialog" aria-labelledby="veterinaryDetailTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title d-inline" id="veterinaryDetailTitle">{{ (veterinary.name != '') ? veterinary.name : '...' }}</h5>&nbsp;&nbsp;
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form>
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <label for="txtName">Nombre</label>
+                  <input type="text" [(ngModel)]="veterinary.name" name="name" class="form-control" id="txtName" placeholder="Ingrese el nombre" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="txtKind">Tipo</label>
+                  <input type="text" [(ngModel)]="veterinary.kind" name="kind" class="form-control" id="txtKind" placeholder="Perro, Gato, ..." required>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="txtBreed">Raza</label>
+                  <input type="text" [(ngModel)]="veterinary.breed" name="breed" class="form-control" id="txtBreed" placeholder="Raza de {{ (veterinary.name != '') ? veterinary.name : '...' }}" required>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="txtBirthDate">Fecha de nacimiento</label>
+                  <input type="text" [(ngModel)]="veterinary.birthDate" name="birthDate" class="form-control" id="txtBirthDate" placeholder="Ingrese la fecha de nacimiento" required>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="txtAcquisitionDate">Fecha de adquisición</label>
+                  <input type="text" [(ngModel)]="veterinary.acquisitionDate" name="acquisitionDate" class="form-control" id="txtAcquisitionDate" placeholder="Ingrese la fecha de adquisición">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button *ngIf="create" type="button" (click)="createVeterinary()" class="btn btn-custom btn-group-justified">Crear</button>
+          <button *ngIf="!create" type="button" (click)="updateVeterinary()" class="btn btn-custom btn-group-justified">Actualizar</button>
+          <button type="button" (click)="deleteVeterinary()" class="btn btn-danger btn-group-justified">Eliminar</button>
+          <button type="button" id="closeModal" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

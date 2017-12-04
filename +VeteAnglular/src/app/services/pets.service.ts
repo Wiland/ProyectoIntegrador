@@ -6,53 +6,56 @@ import 'rxjs/add/operator/catch';
 
 @Injectable()
 export class PetsService {
-  pets:any[] = [{
-    id: 1,
-    name: "Pupi",
-    kind: "Perro",
-    breed: "Golden Retriever",
-    owner: {
-      id: "idOwner",
-      name: "Wilmer"
-    },
-    birthDate: "2014-10-02",
-    acquisitionDate: "2014-10-02",
-    photo: "/assets/img/perro.jpg",
-    active: true
-  },
-  {
-    id: 2,
-    name: "Fredy",
-    kind: "Perro",
-    breed: "Golden Retriever",
-    owner: {
-      id: "idOwner2",
-      name: "Rolo"
-    },
-    birthDate: "2015-10-02",
-    acquisitionDate: "2015-10-02",
-    photo: "/assets/img/noimage.png",
-    active: true
-  },
-  {
-    id: 3,
-    name: "Wanda",
-    kind: "Perro",
-    breed: "Pomerania",
-    owner: {
-      id: 1,
-      name: "Juan Camilo Giraldo"
-    },
-    birthDate: "2017-10-15",
-    acquisitionDate: "2017-10-15",
-    photo: "/assets/img/wanda.jpg",
-    active: true
-  }];
-  result:any;
-  treatments:any[] = [];
-  treatmentsArray:any[] = [];
+  private petsArray:any[] = [];
+  private pets:any[] = [];
+  private result:any;
+  private treatments:any[] = [];
+  private treatmentsArray:any[] = [];
 
   constructor( private http:Http, private _serviceConfig:ServiceConfig ) {
+    this.petsArray = [{
+      id: 1,
+      name: "Pupi",
+      kind: "Perro",
+      breed: "Golden Retriever",
+      owner: {
+        id: 1,
+        name: "Wilmer"
+      },
+      birthDate: "2014-10-02",
+      acquisitionDate: "2014-10-02",
+      photo: "/assets/img/perro.jpg",
+      active: true
+    },
+    {
+      id: 2,
+      name: "Fredy",
+      kind: "Perro",
+      breed: "Golden Retriever",
+      owner: {
+        id: 1,
+        name: "Wilmer"
+      },
+      birthDate: "2015-10-02",
+      acquisitionDate: "2015-10-02",
+      photo: "/assets/img/noimage.png",
+      active: true
+    },
+    {
+      id: 3,
+      name: "Wanda",
+      kind: "Perro",
+      breed: "Pomerania",
+      owner: {
+        id: 2,
+        name: "Juan Camilo Giraldo"
+      },
+      birthDate: "2017-10-15",
+      acquisitionDate: "2017-10-15",
+      photo: "/assets/img/wanda.jpg",
+      active: true
+    }];
+
     this.treatmentsArray = [
       {
         id: 1,
@@ -113,6 +116,23 @@ export class PetsService {
     ];
   }
 
+  getEmptyPet(){
+    return {
+      id: 0,
+      name: "",
+      kind: "",
+      breed: "",
+      owner: {
+        id: 0,
+        name: ""
+      },
+      birthDate: "",
+      acquisitionDate: "",
+      photo: "/assets/img/noimage.png",
+      active: false
+    }
+  }
+
   getAllPets(){
     let url = `${ this._serviceConfig.BASE_SERVICE_URL }/pets`;
     let headers = new Headers();
@@ -125,7 +145,32 @@ export class PetsService {
         return this.pets;
       })
       .catch( error => {
-        console.log(this.pets);
+        return this.petsArray;
+      });
+  }
+
+  getAllPetsForUser(userId){
+    this.pets = [];
+    let url = `${ this._serviceConfig.BASE_SERVICE_URL }/users/${ userId }/pets`;
+    let headers = new Headers();
+
+    headers.append("Accept", "application/json" );
+
+    return this.http.get( url, { headers } )
+      .map( res => {
+        this.pets = res.json();
+        return this.pets;
+      })
+      .catch( error => {
+        for (var i = 0; i < this.petsArray.length; i++) {
+          if (this.petsArray[i].owner.id === userId) {
+            this.pets.push(this.petsArray[i]);
+          }
+        }
+        if (this.pets.length == 0) {
+          console.log(error);
+          return error;
+        }
         return this.pets;
       });
   }
@@ -171,10 +216,11 @@ export class PetsService {
         this.result = res.json();
         return this.result;
       })
-      .catch( error => {
-        this.pets.push(pet);
+      .catch( (error:any) => {
+        pet.id = this.petsArray.length + 1;
+        this.petsArray.push(pet);
         this.result = { message: "Creado exitosamente" };
-        return this.result;
+        return error;
       });
   }
 
