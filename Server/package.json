@@ -1,0 +1,24 @@
+{
+    "name": "serverpi",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "nodemon --harmony server.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "async": "^2.5.0",
+        "bluebird": "^3.5.1",
+        "body-parser": "^1.18.2",
+        "express": "^4.16.2",
+        "lodash": "^4.17.4",
+        "mongoose": "^4.13.0",
+        "socket.io": "^2.0.4"
+    },
+    "devDependencies": {
+        "babel-core": "^6.26.0"
+    }
+}
